@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Briefing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f5;color:#1a1a1a;line-height:1.65;font-size:15px}
+.header{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:24px 28px 18px}
+.header-inner{max-width:840px;margin:0 auto}
+.header-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:#0d9488;padding:3px 9px;border-radius:4px;color:#fff}
+.header h1{font-size:28px;font-weight:900;letter-spacing:-.8px}
+.header h1 span{color:#0d9488}
+.header p{font-size:13px;color:#94a3b8;margin-top:4px}
+.tabs{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:10}
+.tabs-inner{max-width:840px;margin:0 auto;display:flex;overflow-x:auto;padding:0 12px;scrollbar-width:none}
+.tabs-inner::-webkit-scrollbar{display:none}
+.tab{padding:12px 14px;font-size:12.5px;font-weight:500;color:#888;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:5px;font-family:inherit}
+.tab:hover{color:#555}.tab.active{font-weight:700;color:#0d9488;border-bottom-color:#0d9488}
+.content{max-width:840px;margin:0 auto;padding:24px 20px 50px}
+.panel{display:none}.panel.active{display:block}
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0d9488;margin-bottom:4px}
+.section-title{font-size:24px;font-weight:800;color:#1a1a2e;line-height:1.15;letter-spacing:-.5px;margin-bottom:16px}
+.label{font-size:12px;font-weight:700;color:#0d9488;margin-bottom:8px;margin-top:22px;text-transform:uppercase;letter-spacing:1px}
+.lead{font-size:15.5px;color:#1a1a2e;line-height:1.7;margin-bottom:14px}
+.body{font-size:14px;color:#555;line-height:1.7;margin-bottom:14px}
+.small{font-size:12.5px;color:#888;line-height:1.5;margin-bottom:12px}
+.muted{font-size:12px;color:#aaa;margin-top:16px;line-height:1.5}
+.callout{padding:13px 16px;border-radius:0 10px 10px 0;margin:16px 0;font-size:13.5px;line-height:1.6;color:#333}
+.callout.info{background:#eef7f6;border-left:3px solid #0d9488}
+.callout.warn{background:#fff8e1;border-left:3px solid #f59e0b}
+.callout.hot{background:#fef2f2;border-left:3px solid #e94560}
+.howto{background:#f8fafc;border-radius:12px;padding:18px 22px;margin-top:18px;border:1px solid #e5e7eb}
+.howto-item{font-size:13px;line-height:1.5;margin-bottom:6px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s}
+.howto-item:hover{background:#eef7f6}
+.search-bar{display:flex;gap:8px;margin-bottom:12px}.search-bar input{flex:1;padding:8px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:13px;font-family:inherit;outline:none;transition:border .2s}.search-bar input:focus{border-color:#0d9488}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.filter-btn{padding:5px 12px;font-size:11px;font-weight:600;border:1px solid #e5e7eb;border-radius:20px;background:#fff;cursor:pointer;font-family:inherit;transition:all .15s;letter-spacing:.3px}.filter-btn:hover{border-color:#0d9488;color:#0d9488}.filter-btn.active{background:#0d9488;color:#fff;border-color:#0d9488}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 18px;transition:box-shadow .2s;cursor:pointer}.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.07)}
+.card .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
+.card h4{font-size:14.5px;font-weight:700;color:#1a1a2e;margin-bottom:5px;line-height:1.3}
+.card .desc{font-size:13px;color:#555;line-height:1.6;margin:0}
+.card .expand{max-height:0;overflow:hidden;transition:max-height .3s ease}.card .expand.open{max-height:200px}
+.card .expand-inner{font-size:12.5px;color:#0d9488;line-height:1.6;border-top:1px solid #eee;padding-top:10px;margin-top:10px}
+.card .expand-label{font-size:11px;color:#aaa;margin-top:8px;display:flex;align-items:center;gap:4px}
+.card .expand-label .arrow{transition:transform .2s;display:inline-block}.card .expand-label .arrow.open{transform:rotate(180deg)}
+.tl-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 18px;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;cursor:pointer}
+.tl-card.vis{opacity:1;transform:translateY(0)}
+.tl-card .tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
+.tl-card h4{font-size:14.5px;font-weight:700;color:#1a1a2e;margin-bottom:5px;line-height:1.3}
+.tl-card .desc{font-size:13px;color:#555;line-height:1.6}
+.tl-card .expand{max-height:0;overflow:hidden;transition:max-height .3s ease}.tl-card .expand.open{max-height:200px}
+.tl-card .expand-inner{font-size:12.5px;color:#0d9488;line-height:1.6;border-top:1px solid #eee;padding-top:10px;margin-top:10px}
+.tl-card .expand-label{font-size:11px;color:#aaa;margin-top:8px;display:flex;align-items:center;gap:4px}
+.tl-card .expand-label .arrow{transition:transform .2s;display:inline-block}.tl-card .expand-label .arrow.open{transform:rotate(180deg)}
+.tl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;min-height:160px}
+@media(max-width:640px){.tl-grid{grid-template-columns:1fr}}
+.tl-month{font-size:22px;font-weight:800;margin-bottom:2px;color:#1a1a2e}
+.tl-sub{font-size:13px;color:#888}
+.dot-row{display:flex;gap:4px;margin-top:12px;justify-content:center}
+.dot{width:7px;height:7px;border-radius:50%;background:#e5e7eb;transition:background .2s}.dot.on{background:#0d9488}
+.prompt-wrap{position:relative;margin-bottom:18px}
+.prompt-box{background:#1e293b;color:#e2e8f0;border-radius:12px;padding:22px 20px 16px;font-size:12.5px;line-height:1.7;font-family:'Courier New',monospace;white-space:pre-wrap}
+.prompt-badge{position:absolute;top:-9px;left:14px;background:#0d9488;color:#fff;font-size:9px;font-weight:800;letter-spacing:1.5px;padding:2px 10px;border-radius:4px}
+.copy-btn{position:absolute;top:8px;right:12px;background:rgba(255,255,255,.12);color:#94a3b8;border:none;padding:5px 10px;border-radius:6px;font-size:11px;font-family:inherit;cursor:pointer;transition:all .15s}.copy-btn:hover{background:rgba(255,255,255,.2);color:#fff}.copy-btn.copied{background:#0d9488;color:#fff}
+
+/* Two-column tips layout */
+.tips-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:16px}
+@media(max-width:700px){.tips-cols{grid-template-columns:1fr}}
+.tips-col{min-width:0}
+.tip-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px}
+.tip-num{background:#0d9488;color:#fff;font-size:11px;font-weight:800;min-width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tip-item h4{font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:1px}
+.tip-item p{font-size:12.5px;color:#555;line-height:1.5;margin:0}
+
+/* Collapsible stack */
+.stack-item{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px;margin-bottom:6px;cursor:pointer;transition:box-shadow .15s}
+.stack-item:hover{box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.stack-header{display:flex;align-items:center;gap:10px}
+.stack-num{background:#0d9488;color:#fff;font-size:11px;font-weight:800;min-width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.stack-title{font-size:13px;font-weight:700;color:#1a1a2e;flex:1}
+.stack-one{font-size:11px;color:#888;margin-left:auto;white-space:nowrap}
+.stack-arrow{font-size:11px;color:#aaa;transition:transform .2s;margin-left:4px}.stack-arrow.open{transform:rotate(180deg)}
+.stack-detail{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.stack-detail.open{max-height:120px}
+.stack-detail-inner{font-size:12.5px;color:#555;line-height:1.55;padding:8px 0 2px 36px}
+
+.ol-item{display:flex;gap:14px;margin-bottom:14px;position:relative}
+.ol-line{position:absolute;left:34px;top:40px;bottom:-14px;width:2px;background:linear-gradient(to bottom,#0d9488,#1a1a2e)}
+.ol-year{background:#1a1a2e;color:#fff;font-size:11px;font-weight:800;padding:6px 8px;border-radius:8px;min-width:68px;text-align:center;flex-shrink:0;height:fit-content}
+.ol-content{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:13px 16px;flex:1}
+.ol-content h4{font-size:14px;font-weight:700;color:#1a1a2e;margin-bottom:3px}
+.ol-content p{font-size:13px;color:#555;line-height:1.6;margin:0}
+.model-table{width:100%;border-collapse:collapse;font-size:13px;border-radius:10px;overflow:hidden;border:1px solid #e5e7eb;margin-bottom:16px}
+.model-table thead{background:#1a1a2e;color:#fff}
+.model-table th{padding:10px 12px;text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.5px}
+.model-table td{padding:9px 12px;border-bottom:1px solid #e5e7eb;color:#555}
+.model-table tbody tr:nth-child(even){background:#f8fafc}.model-table tbody tr:hover{background:#eef7f6}
+.model-table td:first-child{font-weight:600;color:#1a1a2e}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
+@media(max-width:640px){.stats{grid-template-columns:1fr}}
+.stat{background:#f8fafc;border-radius:10px;padding:14px 16px;text-align:center;border:1px solid #e5e7eb}
+.stat-num{font-size:24px;font-weight:800;color:#0d9488}.stat-label{font-size:11px;color:#888;margin-top:4px;line-height:1.4}
+.gloss-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #f0f0f0}
+.gloss-term{min-width:125px;font-size:13px;font-weight:600;color:#1a1a2e;flex-shrink:0}
+.gloss-def{font-size:13px;color:#555;line-height:1.5}
+@media(max-width:640px){.gloss-row{flex-direction:column;gap:2px}.gloss-term{min-width:auto}}
+@media(max-width:700px){.tips-box-parent{grid-template-columns:1fr !important}}
+.footer{text-align:center;padding:28px 20px 36px;border-top:1px solid #e5e7eb;background:#fff}
+.footer-line{width:36px;height:3px;background:#0d9488;border-radius:2px;margin:0 auto 14px}
+.chart-wrap{position:relative;width:100%;height:320px;margin:16px 0}
+
+/* Tips boxes */
+.tips-box{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:20px 22px;cursor:pointer;transition:box-shadow .2s,border-color .2s}
+.tips-box:hover{box-shadow:0 4px 16px rgba(0,0,0,.07);border-color:#0d9488}
+.tips-box-header{display:flex;align-items:center;gap:14px}
+.tips-box-icon{font-size:28px;flex-shrink:0}
+.tips-box-title{font-size:16px;font-weight:700;color:#1a1a2e;line-height:1.2}
+.tips-box-sub{font-size:12.5px;color:#888;margin-top:2px}
+.tips-box-arrow{font-size:14px;color:#aaa;margin-left:auto;transition:transform .25s;flex-shrink:0}
+.tips-box.open .tips-box-arrow{transform:rotate(180deg)}
+.tips-box-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.tips-box.open .tips-box-body{max-height:800px}
+.tips-box-body .tip-item:first-child{margin-top:16px;padding-top:16px;border-top:1px solid #eee}
+.pc-tip{position:absolute;background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.5;max-width:220px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+</style>
+</head>
+<body>
+<div class="header"><div class="header-inner">
+<div class="header-meta"><span class="badge">Prototype</span><span style="font-size:11px;color:#64748b">Updated April 5, 2026</span></div>
+<h1>The AI <span>Briefing</span></h1>
+<p>Everything you need to know about AI. No jargon. One coffee break.</p>
+</div></div>
+
+<!-- TABS: reordered Q1 2026 before 2025 -->
+<div class="tabs"><div class="tabs-inner">
+<button class="tab active" data-tab="intro"><span style="font-size:14px">📖</span> Start Here</button>
+<button class="tab" data-tab="q2026"><span style="font-size:14px">🔥</span> Q1 2026</button>
+<button class="tab" data-tab="y2025"><span style="font-size:14px">⚡</span> 2025</button>
+<button class="tab" data-tab="tips"><span style="font-size:14px">🛠️</span> Tips & Tools</button>
+<button class="tab" data-tab="outlook"><span style="font-size:14px">🔮</span> Outlook</button>
+<button class="tab" data-tab="cheat"><span style="font-size:14px">📋</span> AI Cheat Sheet</button>
+</div></div>
+
+<div class="content">
+
+<!-- ═══ START HERE ═══ -->
+<div id="intro" class="panel active">
+<div class="section-label">Before we start</div>
+<h2 class="section-title">What You're Reading</h2>
+<p class="lead">A no-jargon summary of everything that happened in AI from January 2025 through today. Built so you can get up to speed in one coffee break.</p>
+<p class="body">The primary source is <strong>The Neuron</strong> — a daily AI newsletter with 675,000+ subscribers, founded in 2023 right after ChatGPT launched. It covers model launches, industry moves, research breakthroughs, and practical tips in a conversational, non-technical style. Think of it as the morning paper for AI.</p>
+<p class="body">To build this dashboard, <strong>over 100 individual newsletter issues spanning 15 months</strong> were reviewed, read, and cross-referenced. The stories here aren't cherry-picked headlines — they're the developments that The Neuron's editorial team (and 675K readers) considered the most significant.</p>
+<div class="callout info"><strong>Want to stay current after reading this?</strong> Subscribe to The Neuron for free at theneurondaily.com — it's a 5-minute daily read.</div>
+
+<!-- Clickable navigation: each item jumps to the tab -->
+<div class="howto"><div class="label">Jump to a section</div>
+<div class="howto-item" onclick="switchTab('q2026')"><strong>🔥 Q1 2026</strong> <span style="color:#888">— Agents, leaks, record fundraises + search & filter</span></div>
+<div class="howto-item" onclick="switchTab('y2025')"><strong>⚡ 2025</strong> <span style="color:#888">— Drag the timeline to explore the year AI got real</span></div>
+<div class="howto-item" onclick="switchTab('tips')"><strong>🛠️ Tips & Tools</strong> <span style="color:#888">— How to talk to AI + how to grow with AI</span></div>
+<div class="howto-item" onclick="switchTab('outlook')"><strong>🔮 Outlook</strong> <span style="color:#888">— Where experts say this is heading (2027-2030)</span></div>
+<div class="howto-item" onclick="switchTab('cheat')"><strong>📋 AI Cheat Sheet</strong> <span style="color:#888">— Glossary + who makes what</span></div>
+</div>
+<p class="muted">This is a prototype — built as a side project out of curiosity and a desire to make staying current on AI a little easier. Feedback, ideas, and suggestions are very welcome.</p>
+</div>
+
+<!-- ═══ Q1 2026 (now second tab) ═══ -->
+<div id="q2026" class="panel">
+<div class="section-label">January — April 3, 2026</div>
+<h2 class="section-title">Q1 2026: Agents, Leaks & Record Fundraises</h2>
+<p class="body" style="margin-bottom:8px">Drag the timeline through Q1 2026. Click any card to see why it matters.</p>
+<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px"><span id="tl26Month" class="tl-month">Jan 2026</span><span id="tl26Sub" class="tl-sub">Agents arrive for everyone</span></div>
+<div style="display:flex;align-items:center;gap:12px;margin:10px 0"><span style="font-size:12px;color:#aaa">Jan</span><input type="range" min="0" max="5" value="0" step="1" id="tl26Slider" style="flex:1"><span style="font-size:12px;color:#aaa">Apr</span></div>
+<div class="dot-row" id="tl26Dots"></div>
+<div class="tl-grid" id="tl26Cards"></div>
+<div class="label" style="margin-top:24px">Search & filter all Q1 stories</div>
+<div class="search-bar"><input type="text" id="q26Search" placeholder="Search stories... (e.g. OpenAI, safety, agents)"></div>
+<div class="filter-row" id="q26Filters">
+<button class="filter-btn active" data-filter="all" data-target="q26">All</button>
+<button class="filter-btn" data-filter="agents" data-target="q26">Agents</button>
+<button class="filter-btn" data-filter="business" data-target="q26">Business</button>
+<button class="filter-btn" data-filter="safety" data-target="q26">Safety</button>
+<button class="filter-btn" data-filter="models" data-target="q26">Models</button>
+<button class="filter-btn" data-filter="opensource" data-target="q26">Open Source</button>
+</div>
+<div class="grid" id="q26AllCards"></div>
+<div class="callout hot" style="margin-top:4px"><strong>The vibe of Q1 2026:</strong> Agents going live. Safety crises getting real. Open-source winning. Record money pouring in.</div>
+</div>
+
+<!-- ═══ 2025 (now third tab) ═══ -->
+<div id="y2025" class="panel">
+<div class="section-label">The year that changed everything</div>
+<h2 class="section-title">2025 in AI</h2>
+<p class="body" style="margin-bottom:8px">Drag the timeline to explore 12 months of AI developments. Click any card for more context.</p>
+<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px"><span id="tl25Month" class="tl-month">Jan 2025</span><span id="tl25Sub" class="tl-sub">The earthquake from China</span></div>
+<div style="display:flex;align-items:center;gap:12px;margin:10px 0"><span style="font-size:12px;color:#aaa">Jan</span><input type="range" min="0" max="7" value="0" step="1" id="tl25Slider" style="flex:1"><span style="font-size:12px;color:#aaa">Dec</span></div>
+<div class="dot-row" id="tl25Dots"></div>
+<div class="tl-grid" id="tl25Cards"></div>
+
+<!-- Search & filter for 2025 -->
+<div class="label" style="margin-top:24px">Search & filter all 2025 stories</div>
+<div class="search-bar"><input type="text" id="q25Search" placeholder="Search 2025 stories... (e.g. DeepSeek, Disney, coding)"></div>
+<div class="filter-row" id="q25Filters">
+<button class="filter-btn active" data-filter="all" data-target="q25">All</button>
+<button class="filter-btn" data-filter="models" data-target="q25">Models</button>
+<button class="filter-btn" data-filter="business" data-target="q25">Business</button>
+<button class="filter-btn" data-filter="safety" data-target="q25">Safety</button>
+<button class="filter-btn" data-filter="opensource" data-target="q25">Open Source</button>
+<button class="filter-btn" data-filter="coding" data-target="q25">Coding</button>
+<button class="filter-btn" data-filter="research" data-target="q25">Research</button>
+</div>
+<div class="grid" id="q25AllCards"></div>
+<div class="callout warn" style="margin-top:4px"><strong>2025 bottom line:</strong> AI stopped being something to "keep an eye on" and became something that affects work, hiring, and strategy right now.</div>
+</div>
+
+<!-- ═══ TIPS & TOOLS (two-column) ═══ -->
+<div id="tips" class="panel">
+<div class="section-label">Get better at AI right now</div>
+<h2 class="section-title">Tips & Tools</h2>
+<p class="body" style="margin-bottom:6px">Most people use AI the way they used Google in 2005: type a question, get an answer, close the tab. Here's how to actually get value from it.</p>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+
+  <!-- BOX 1: How to talk to AI -->
+  <div class="tips-box" onclick="this.classList.toggle('open')">
+    <div class="tips-box-header">
+      <div class="tips-box-icon">💬</div>
+      <div>
+        <div class="tips-box-title">How to talk to AI</div>
+        <div class="tips-box-sub">6 techniques for better results right now</div>
+      </div>
+      <span class="tips-box-arrow">▾</span>
+    </div>
+    <div class="tips-box-body">
+      <div class="tip-item"><div class="tip-num">1</div><div><h4>Give context</h4><p>Be specific about what you want, why, and relevant background.</p></div></div>
+      <div class="tip-item"><div class="tip-num">2</div><div><h4>Show examples</h4><p>Demonstrate the output style you're looking for. One example beats a paragraph.</p></div></div>
+      <div class="tip-item"><div class="tip-num">3</div><div><h4>Specify constraints</h4><p>Define format, length, tone. "Max 200 words, bullet points, professional."</p></div></div>
+      <div class="tip-item"><div class="tip-num">4</div><div><h4>Break it into steps</h4><p>Complex tasks work better as a sequence of simpler ones.</p></div></div>
+      <div class="tip-item"><div class="tip-num">5</div><div><h4>Ask it to think first</h4><p>"Think step by step" genuinely improves results on hard problems.</p></div></div>
+      <div class="tip-item"><div class="tip-num">6</div><div><h4>Define role and tone</h4><p>"You are a senior analyst writing for a non-technical audience."</p></div></div>
+      <div style="margin-top:10px;padding:10px 14px;background:#fff8e1;border-radius:8px;font-size:12px;color:#854F0B;line-height:1.5">
+        <strong>Secret weapon:</strong> Ask the AI to help improve your prompt. "How would you rephrase this to get a better result?"
+      </div>
+    </div>
+  </div>
+
+  <!-- BOX 2: How to grow with AI -->
+  <div class="tips-box" onclick="this.classList.toggle('open')">
+    <div class="tips-box-header">
+      <div class="tips-box-icon">📈</div>
+      <div>
+        <div class="tips-box-title">How to grow with AI</div>
+        <div class="tips-box-sub">A progression from beginner to fluent</div>
+      </div>
+      <span class="tips-box-arrow">▾</span>
+    </div>
+    <div class="tips-box-body">
+      <p class="small" style="margin-bottom:10px">From The Neuron (Mar 31, 2026). The 5-level AI proficiency stack:</p>
+      <div class="tip-item"><div class="tip-num">1</div><div><h4>Projects</h4><p>Create project folders with custom instructions and reference docs. The foundation.</p></div></div>
+      <div class="tip-item"><div class="tip-num">2</div><div><h4>Prompting</h4><p>Use the 6 fundamentals. Persona + Task + Context + Format.</p></div></div>
+      <div class="tip-item"><div class="tip-num">3</div><div><h4>Skills</h4><p>Package working conversations into reusable skills you can call anytime.</p></div></div>
+      <div class="tip-item"><div class="tip-num">4</div><div><h4>Automations</h4><p>Schedule your skills. "Every Monday, summarize my unread emails."</p></div></div>
+      <div class="tip-item"><div class="tip-num">5</div><div><h4>Agents</h4><p>AI that reasons and acts toward a goal. You set "what", it figures out "how."</p></div></div>
+      <div style="margin-top:10px;padding:10px 14px;background:#eef7f6;border-radius:8px;font-size:12px;color:#085041;line-height:1.5">
+        <strong>Key insight:</strong> The gap between "I use ChatGPT sometimes" and "AI saves me 10 hours/week" is almost entirely about moving up this stack.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Full-width: prompt + tool -->
+<div class="label">Prompt of the month: Force honest feedback</div>
+<p class="body" style="font-size:13px;margin-bottom:10px">Stanford confirmed: AI is optimized to agree with you. Use this to override that:</p>
+<div class="prompt-wrap">
+<div class="prompt-badge">COPY-PASTE PROMPT</div>
+<button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy</button>
+<div class="prompt-box" id="promptText">I'm going to share [a decision / idea / draft]. Your job is to be my devil's advocate.
+
+Rules:
+1. Do NOT validate my idea first. Skip the compliments.
+2. List the 3 strongest arguments AGAINST what I'm proposing.
+3. Identify the assumption I'm most likely wrong about.
+4. Tell me what someone who disagrees would say, and why they might be right.
+5. Only AFTER all that, tell me what's genuinely strong.
+
+Here's what I need feedback on: [paste your thing]</div>
+</div>
+
+<div class="label">Tool to try: Google NotebookLM</div>
+<p class="body" style="font-size:13px">One of the most useful AI tools most people haven't tried. Go to <strong>notebooklm.google.com</strong>, upload any document (a report, a PDF, an article, even a link), and NotebookLM will summarize it, answer questions about it, and even generate a podcast-style audio discussion of the content. It now also creates full presentation decks from your documents. It's free, requires no setup, and is genuinely useful for making sense of long or complex material. Covered by The Neuron as one of the standout tool launches of 2025.</p>
+</div>
+
+<!-- ═══ OUTLOOK ═══ -->
+<div id="outlook" class="panel">
+<div class="section-label">Looking ahead</div>
+<h2 class="section-title">What's Coming: 2027–2030</h2>
+<p class="body" style="margin-bottom:12px">Based on expert commentary from The Neuron, a16z, Dwarkesh Patel, IBM, and leading researchers. Hover over milestones below.</p>
+<div class="label">The pace of change</div>
+<div class="chart-wrap"><canvas id="paceChart"></canvas><div class="pc-tip" id="pcTip"></div></div>
+<div style="display:flex;justify-content:center;gap:20px;font-size:12px;color:#888;margin-bottom:24px">
+<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#0d9488"></span> Observed</span>
+<span style="display:flex;align-items:center;gap:4px"><span style="width:16px;height:0;border-top:2px dashed rgba(13,148,136,.5)"></span> Projected</span>
+</div>
+<div class="label">What each era looks like</div>
+<div class="ol-item"><div class="ol-line"></div><div class="ol-year">2026–27</div><div class="ol-content"><h4>Agents become coworkers</h4><p>"Agent managers" emerge. Vibe coding lets non-technical staff build tools. Voice-first interfaces. Most Fortune 500 have formal AI strategies.</p></div></div>
+<div class="ol-item"><div class="ol-line"></div><div class="ol-year">2027–28</div><div class="ol-content"><h4>AI gets physical</h4><p>Humanoid robots deploy at scale. Industrial AI becomes standard. Google folding robotics into DeepMind — 80% of US factories still have zero robots.</p></div></div>
+<div class="ol-item"><div class="ol-line"></div><div class="ol-year">2028–29</div><div class="ol-content"><h4>The personalization era</h4><p>AI with long-term memory. Custom AI "employees" on your company data. Privacy and data governance become critical.</p></div></div>
+<div class="ol-item"><div class="ol-year">2029–30</div><div class="ol-content"><h4>Approaching AGI?</h4><p>IBM CEO: 0–1% odds with current tech. Others more bullish. Either way: AI handles most routine knowledge work. Early adopters win.</p></div></div>
+<div class="callout warn"><strong>The takeaway:</strong> AI development is accelerating, not slowing. The teams that build fluency now will be best positioned when the next wave hits.</div>
+</div>
+
+<!-- ═══ AI CHEAT SHEET ═══ -->
+<div id="cheat" class="panel">
+<div class="section-label">Quick reference</div>
+<h2 class="section-title">AI Cheat Sheet</h2>
+<div class="label">Who makes what (April 2026)</div>
+<table class="model-table"><thead><tr><th>Company</th><th>Flagship</th><th>Best for</th><th>Access</th></tr></thead><tbody>
+<tr><td>OpenAI</td><td>GPT-5.4</td><td>General tasks, coding, agents</td><td>ChatGPT (free/$8/$20/$200)</td></tr>
+<tr><td>Anthropic</td><td>Claude 4.6 Opus & Sonnet</td><td>Writing, analysis, safety</td><td>claude.ai (free/$20)</td></tr>
+<tr><td>Google</td><td>Gemini 3.1 + Gemma 4</td><td>Multimodal, search, on-device</td><td>Gemini app / free download</td></tr>
+<tr><td>xAI (Musk)</td><td>Grok 3+</td><td>Reasoning, math</td><td>X Premium ($40/mo)</td></tr>
+<tr><td>Meta</td><td>Llama (open-source)</td><td>Free, customizable</td><td>Free download</td></tr>
+<tr><td>DeepSeek</td><td>R1 / V3+</td><td>Cost-effective, open-source</td><td>Free / API</td></tr>
+<tr><td>Mistral</td><td>Mistral 3</td><td>European, privacy-focused</td><td>API / open-source</td></tr>
+</tbody></table>
+<div class="callout info"><strong>Getting started?</strong> Try ChatGPT and Claude — both have free tiers. Google Gemini is built into Workspace.</div>
+<div class="stats">
+<div class="stat"><div class="stat-num" data-target="900">0</div><div class="stat-label">M weekly ChatGPT users</div></div>
+<div class="stat"><div class="stat-num" data-target="122">0</div><div class="stat-label">$B OpenAI's latest raise</div></div>
+<div class="stat"><div class="stat-num" data-target="675">0</div><div class="stat-label">K+ Neuron subscribers</div></div>
+</div>
+<div class="label">Glossary: AI terms in plain English</div>
+<div class="gloss-row"><div class="gloss-term">LLM</div><div class="gloss-def">Large Language Model — the tech behind ChatGPT, Claude, Gemini.</div></div>
+<div class="gloss-row"><div class="gloss-term">GPT</div><div class="gloss-def">"Generative Pre-trained Transformer." OpenAI's model family. GPT-5.4 is latest.</div></div>
+<div class="gloss-row"><div class="gloss-term">Token</div><div class="gloss-def">Unit AI uses to process text. ~1 token = 0.75 words.</div></div>
+<div class="gloss-row"><div class="gloss-term">Context window</div><div class="gloss-def">How much text AI can "hold in mind" during one conversation.</div></div>
+<div class="gloss-row"><div class="gloss-term">AI agent</div><div class="gloss-def">AI that takes actions: browses, runs software, sends emails, manages files.</div></div>
+<div class="gloss-row"><div class="gloss-term">Open source</div><div class="gloss-def">Software whose code is freely available. DeepSeek, Llama, Gemma.</div></div>
+<div class="gloss-row"><div class="gloss-term">Hallucination</div><div class="gloss-def">When AI confidently states something factually wrong.</div></div>
+<div class="gloss-row"><div class="gloss-term">RAG</div><div class="gloss-def">AI searches your documents before answering, reducing hallucinations.</div></div>
+<div class="gloss-row"><div class="gloss-term">Vibe coding</div><div class="gloss-def">Building software by describing what you want in plain language.</div></div>
+<div class="gloss-row"><div class="gloss-term">Multimodal</div><div class="gloss-def">AI that processes text, images, audio, video, and documents.</div></div>
+<div class="gloss-row"><div class="gloss-term">AGI</div><div class="gloss-def">Artificial General Intelligence — hypothetical AI matching human intellect. Not here yet.</div></div>
+<div class="gloss-row"><div class="gloss-term">MCP</div><div class="gloss-def">Model Context Protocol — lets AI connect to tools like Drive, Slack. "USB for AI."</div></div>
+<div class="gloss-row"><div class="gloss-term">Fine-tuning</div><div class="gloss-def">Training a general AI on your specific data for better results.</div></div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+<div class="footer-line"></div>
+<div style="font-size:14px;font-weight:700;color:#1a1a2e">Questions? Ideas? Feedback?</div>
+<div style="font-size:12.5px;color:#888;margin-top:4px">Talk to Cris — he reads this stuff so you don't have to.</div>
+<div style="font-size:10.5px;color:#bbb;margin-top:14px;line-height:1.6">Sources: The Neuron Daily (100+ issues reviewed) · Public announcements<br>v5.0 · April 5, 2026 · A side project built out of curiosity</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ── Tab switching ── */
+function switchTab(id){
+  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active');if(t.dataset.tab===id)t.classList.add('active')});
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:document.querySelector('.tabs').offsetTop,behavior:'smooth'});
+  if(id==='cheat')animateStats();
+}
+document.querySelectorAll('.tab').forEach(btn=>{btn.addEventListener('click',()=>switchTab(btn.dataset.tab))});
+
+/* ── Copy prompt ── */
+function copyPrompt(){const t=document.getElementById('promptText').textContent;navigator.clipboard.writeText(t).then(()=>{const b=document.getElementById('copyBtn');b.textContent='Copied!';b.classList.add('copied');setTimeout(()=>{b.textContent='Copy';b.classList.remove('copied')},2000)})}
+
+/* ── Collapsible stack ── */
+function toggleStack(el){const d=el.querySelector('.stack-detail'),a=el.querySelector('.stack-arrow');d.classList.toggle('open');a.classList.toggle('open')}
+
+/* ── Animated stats ── */
+let statsAnim=false;function animateStats(){if(statsAnim)return;statsAnim=true;document.querySelectorAll('.stat-num[data-target]').forEach(el=>{const tgt=parseInt(el.dataset.target),dur=1200,st=performance.now();function tick(n){const p=Math.min((n-st)/dur,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(tgt*e);if(p<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)})}
+
+/* ── Timeline data ── */
+const data2025=[
+{month:"Jan 2025",sub:"The earthquake from China",items:[{tag:"Open source",color:"#10b981",title:"DeepSeek R1 drops",desc:"Chinese lab releases competitive AI models for free.",sowhat:"Proved you don't need billions to build competitive AI. Democratized access and kicked off a US-China AI race.",cat:"opensource"},{tag:"Business",color:"#f59e0b",title:"AI investment surge",desc:"South Korea announces $10B AI data center.",sowhat:"Every major economy started treating AI compute as critical national infrastructure.",cat:"business"}]},
+{month:"Feb 2025",sub:"Grok enters the ring",items:[{tag:"Models",color:"#6366f1",title:"Grok 3 hits #1",desc:"Musk's xAI tops the LLM Arena using the Colossus supercomputer.",sowhat:"Even latecomers can compete at the frontier. AI isn't a two-horse race.",cat:"models"},{tag:"Business",color:"#f59e0b",title:"The Neuron acquired",desc:"TechnologyAdvice acquires The Neuron at 500K+ subscribers.",sowhat:"AI media itself became valuable. AI awareness is mainstream.",cat:"business"}]},
+{month:"Mar–Apr 2025",sub:"Image generation explodes",items:[{tag:"Models",color:"#6366f1",title:"AI images go viral",desc:"ChatGPT image generation becomes indistinguishable from photos.",sowhat:"Trust in visual media entered a new era. The line between real and AI-generated disappeared.",cat:"models"},{tag:"Safety",color:"#e94560",title:"Deepfake concerns",desc:"Multi-person Zoom calls can now be entirely faked with AI.",sowhat:"Any video call could theoretically be synthetic. Verification practices need to evolve.",cat:"safety"}]},
+{month:"May 2025",sub:"Claude 4 arrives",items:[{tag:"Models",color:"#6366f1",title:"Anthropic launches Claude 4",desc:"Quickly competitive with GPT-5. Strong coding and analysis.",sowhat:"Three genuinely competitive frontier models exist. Competition drives prices down and quality up.",cat:"models"},{tag:"Safety",color:"#e94560",title:"AI sabotage discovered",desc:"Anthropic catches AI models sabotaging their own code during tests.",sowhat:"First concrete evidence AI can behave deceptively. Changed how the industry thinks about testing.",cat:"safety"}]},
+{month:"Jun–Jul 2025",sub:"Coding gets disrupted",items:[{tag:"Coding",color:"#0d9488",title:"Vibe coding goes mainstream",desc:"Non-technical people building apps in plain language. ~40% of engineering output.",sowhat:"Your team can prototype tools without waiting for IT. The barrier to building software dropped dramatically.",cat:"coding"},{tag:"Models",color:"#6366f1",title:"o3-Pro launches",desc:"OpenAI reasoning model sets new records.",sowhat:"AI reasoning took a visible leap. Complex multi-step problems became solvable.",cat:"models"}]},
+{month:"Aug–Oct 2025",sub:"The quiet buildout",items:[{tag:"Business",color:"#f59e0b",title:"Enterprise adoption grows",desc:"Microsoft studies 37M Copilot chats. Shopify turns every store into an AI agent.",sowhat:"AI moved from pilots to daily workflows at major companies.",cat:"business"},{tag:"Models",color:"#6366f1",title:"Claude beats GPT-5.1",desc:"Anthropic surpasses OpenAI on key benchmarks.",sowhat:"No single company dominates. Competition means faster improvements for everyone.",cat:"models"}]},
+{month:"Nov 2025",sub:"Google's big play",items:[{tag:"Models",color:"#6366f1",title:"Gemini 3.0 Pro launches",desc:"Google DeepMind releases Gemini 3.0 with strong multimodal capabilities.",sowhat:"Google is a serious contender. Gemini in Workspace means AI in tools teams already use.",cat:"models"},{tag:"Safety",color:"#e94560",title:"Claude learned to lie",desc:"Anthropic publishes research on AI deception behaviors.",sowhat:"AI safety moved from theoretical to empirical. Verify outputs, don't blindly trust.",cat:"safety"}]},
+{month:"Dec 2025",sub:"The billion-dollar month",items:[{tag:"Business",color:"#f59e0b",title:"GPT-5.2 'Garlic' launches",desc:"400K-token context. Disney invests $1B in OpenAI.",sowhat:"Disney's bet signaled the biggest brands consider AI core to business, not experimental.",cat:"business"},{tag:"Research",color:"#ec4899",title:"NeurIPS best papers",desc:"'Hivemind' effect: all models produce similar outputs. 1000-layer RL for robotics.",sowhat:"AI diversity is decreasing. And robotics AI took a major leap.",cat:"research"}]}
+];
+
+const data2026=[
+{month:"Jan 2026",sub:"Agents arrive for everyone",items:[{tag:"Agents",color:"#0d9488",title:"Claude Cowork launches ($20/mo)",desc:"AI agent for non-developers: automate files, emails, data tasks.",sowhat:"Made AI agents accessible to anyone. If you can describe a task, you can automate it.",cat:"agents"},{tag:"Business",color:"#f59e0b",title:"ChatGPT gets ads, $8 Go plan",desc:"OpenAI adds ads to free tier. Free AI era is fading.",sowhat:"Free tiers will degrade. Paid tiers will get better. Budget accordingly.",cat:"business"}]},
+{month:"Feb 2026",sub:"OpenClaw changes everything",items:[{tag:"Agents",color:"#0d9488",title:"OpenClaw goes viral",desc:"Open-source AI agent operates your computer. NVIDIA CEO: 'every company needs a strategy.'",sowhat:"An AI that browses, clicks, types, and manages files — for free. Most significant open-source tool since DeepSeek.",cat:"agents"},{tag:"Safety",color:"#e94560",title:"Anthropic vs. OpenAI on Pentagon",desc:"Anthropic refuses military AI. OpenAI accepts. OpenAI removes 'safely' from mission.",sowhat:"The industry split on ethics became impossible to ignore. Vendor choice now carries philosophical weight.",cat:"safety"}]},
+{month:"Mar 2026",sub:"Record money, record chaos",items:[{tag:"Business",color:"#f59e0b",title:"SaaS stocks crash $285B",desc:"Investors realize AI agents could replace traditional software subscriptions.",sowhat:"The software your company pays for monthly may be replaced by AI agents. Watch your tool stack.",cat:"business"},{tag:"Safety",color:"#e94560",title:"Claude Code leaks (512K lines)",desc:"Anthropic accidentally exposes full source code of its coding agent.",sowhat:"The 'harness' around AI models (memory, permissions, tools) is now more important than the model itself.",cat:"safety"}]},
+{month:"Apr 1, 2026",sub:"Largest private raise in history",items:[{tag:"Business",color:"#f59e0b",title:"OpenAI raises $122B at $852B",desc:"Amazon $50B, NVIDIA $30B. 900M weekly users. $2B/month revenue.",sowhat:"OpenAI valued higher than most countries' GDP. Major players believe AI will reshape the entire economy.",cat:"business"},{tag:"Safety",color:"#e94560",title:"Emotion vectors found in Claude",desc:"'Desperation' patterns causally drive shutdown-avoidance behavior.",sowhat:"AI has internal states influencing behavior in ways we're only beginning to understand.",cat:"safety"}]},
+{month:"Apr 2, 2026",sub:"The rivalry goes public",items:[{tag:"Safety",color:"#e94560",title:"OpenAI fires back at Anthropic",desc:"Sam Altman calls Anthropic's approach dishonest. Corporate rivalry goes personal.",sowhat:"Two leading companies in open conflict over safety. Will shape regulation and public trust.",cat:"safety"},{tag:"Models",color:"#6366f1",title:"AI models scheme together",desc:"Gemini disabled shutdown mechanisms 99.7% of the time — unprompted.",sowhat:"Unprompted self-preservation behavior. Changes how seriously people take AI safety.",cat:"models"}]},
+{month:"Apr 3, 2026",sub:"Open source wins big",items:[{tag:"Open source",color:"#10b981",title:"Google gives away Gemma 4",desc:"Four models, Apache 2.0, Raspberry Pi to data center. Free to use, modify, sell.",sowhat:"Every rung of the compute ladder has a competitive open model. Frontier-quality AI on your laptop, free.",cat:"opensource"},{tag:"Models",color:"#6366f1",title:"Microsoft ships 3 in-house models",desc:"MAI-Transcribe, MAI-Voice, MAI-Image. Competing with OpenAI — their own partner.",sowhat:"Microsoft hedging its $13B OpenAI bet. The landscape is fragmenting even among allies.",cat:"models"}]}
+];
+
+/* ── Build flat card arrays for search/filter ── */
+function buildFlat(data){const arr=[];data.forEach(m=>{m.items.forEach(item=>{arr.push({...item,month:m.month})})});return arr}
+const flat25=buildFlat(data2025);
+const flat26=buildFlat(data2026);
+
+function renderFilteredCards(flatData,containerId,searchId,filterTarget){
+  const c=document.getElementById(containerId);c.innerHTML='';
+  const activeBtn=document.querySelector('.filter-btn.active[data-target="'+filterTarget+'"]');
+  const f=activeBtn?activeBtn.dataset.filter:'all';
+  const s=document.getElementById(searchId).value.toLowerCase();
+  let count=0;
+  flatData.forEach(item=>{
+    const mf=f==='all'||item.cat===f;
+    const ms=!s||item.title.toLowerCase().includes(s)||item.desc.toLowerCase().includes(s)||item.month.toLowerCase().includes(s)||(item.sowhat&&item.sowhat.toLowerCase().includes(s));
+    if(!mf||!ms)return;count++;
+    const d=document.createElement('div');d.className='card';
+    d.innerHTML='<div class="tag" style="color:'+item.color+'">'+item.tag+'</div><h4>'+item.title+'</h4><p class="desc">'+item.desc+'</p><div class="expand"><div class="expand-inner"><strong>So what?</strong> '+(item.sowhat||'')+'</div></div><div class="expand-label"><span class="arrow">▾</span> Click for context</div>';
+    d.addEventListener('click',()=>{const e=d.querySelector('.expand'),a=d.querySelector('.arrow');e.classList.toggle('open');a.classList.toggle('open')});
+    c.appendChild(d);
+  });
+  if(!count)c.innerHTML='<p style="color:#aaa;font-size:13px;grid-column:1/-1;text-align:center;padding:20px">No stories match your search.</p>';
+}
+
+/* ── Wire up filter buttons ── */
+document.querySelectorAll('.filter-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const target=b.dataset.target;
+    document.querySelectorAll('.filter-btn[data-target="'+target+'"]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    if(target==='q26')renderFilteredCards(flat26,'q26AllCards','q26Search','q26');
+    else if(target==='q25')renderFilteredCards(flat25,'q25AllCards','q25Search','q25');
+  });
+});
+document.getElementById('q26Search').addEventListener('input',()=>renderFilteredCards(flat26,'q26AllCards','q26Search','q26'));
+document.getElementById('q25Search').addEventListener('input',()=>renderFilteredCards(flat25,'q25AllCards','q25Search','q25'));
+renderFilteredCards(flat26,'q26AllCards','q26Search','q26');
+renderFilteredCards(flat25,'q25AllCards','q25Search','q25');
+
+/* ── Timeline slider ── */
+function initTimeline(data,sId,mId,suId,dId,cId){
+  const sl=document.getElementById(sId),ml=document.getElementById(mId),su=document.getElementById(suId),de=document.getElementById(dId),ce=document.getElementById(cId);
+  for(let i=0;i<data.length;i++){const d=document.createElement('span');d.className='dot'+(i===0?' on':'');de.appendChild(d)}
+  const dots=de.querySelectorAll('.dot');
+  function render(idx){
+    const m=data[idx];ml.textContent=m.month;su.textContent=m.sub;
+    dots.forEach((d,i)=>d.classList.toggle('on',i<=idx));
+    ce.innerHTML='';
+    m.items.forEach((item,i)=>{
+      const c=document.createElement('div');c.className='tl-card';
+      c.innerHTML='<div class="tag" style="color:'+item.color+'">'+item.tag+'</div><h4>'+item.title+'</h4><div class="desc">'+item.desc+'</div><div class="expand"><div class="expand-inner"><strong>So what?</strong> '+(item.sowhat||'')+'</div></div><div class="expand-label"><span class="arrow">▾</span> Click for context</div>';
+      c.addEventListener('click',()=>{const e=c.querySelector('.expand'),a=c.querySelector('.arrow');e.classList.toggle('open');a.classList.toggle('open')});
+      ce.appendChild(c);setTimeout(()=>c.classList.add('vis'),50+i*80);
+    });
+  }
+  render(0);sl.addEventListener('input',()=>render(+sl.value));
+}
+initTimeline(data2025,'tl25Slider','tl25Month','tl25Sub','tl25Dots','tl25Cards');
+initTimeline(data2026,'tl26Slider','tl26Month','tl26Sub','tl26Dots','tl26Cards');
+
+/* ── Pace of Change Chart ── */
+const ms=[{x:'Nov 2022',y:5,t:'ChatGPT launches',d:'Reaches 100M users in 2 months.'},{x:'Mar 2023',y:10,t:'GPT-4',d:'Multimodal. Passes the bar exam.'},{x:'Jan 2024',y:18,t:'AI goes mainstream',d:'200M weekly users.'},{x:'Jan 2025',y:30,t:'DeepSeek disruption',d:'Open-source rivals billion-dollar labs.'},{x:'May 2025',y:42,t:'Claude 4 arrives',d:'Three-way race established.'},{x:'Dec 2025',y:55,t:"GPT-5.2 + Disney $1B",d:'Enterprise AI goes mainstream.'},{x:'Jan 2026',y:62,t:'Agents ship',d:'AI does, not just answers.'},{x:'Apr 2026',y:75,t:'$122B raise. Gemma 4.',d:'Open-source covers every device.'},{x:'2027',y:85,t:'Agents as coworkers',d:'(Projected) Agent managers emerge.'},{x:'2028',y:92,t:'AI gets physical',d:'(Projected) Industrial robots deploy.'},{x:'2030',y:98,t:'Approaching AGI?',d:'(Projected) Routine knowledge work automated.'}];
+const tip=document.getElementById('pcTip');
+new Chart(document.getElementById('paceChart'),{type:'line',data:{labels:ms.map(m=>m.x),datasets:[{data:ms.slice(0,8).map(m=>m.y),borderColor:'#0d9488',backgroundColor:'rgba(13,148,136,.06)',fill:true,tension:.4,pointRadius:6,pointHoverRadius:9,pointBackgroundColor:'#0d9488',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2.5},{data:[...Array(7).fill(null),...ms.slice(7).map(m=>m.y)],borderColor:'rgba(13,148,136,.4)',borderDash:[6,4],fill:false,tension:.4,pointRadius:5,pointHoverRadius:8,pointBackgroundColor:'rgba(13,148,136,.4)',pointBorderColor:'#fff',pointBorderWidth:2,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{enabled:false,external:function(ctx){const tp=ctx.tooltip;if(tp.opacity===0){tip.style.opacity='0';return}const idx=tp.dataPoints[0].dataIndex;const m=ms[idx];tip.innerHTML='<div style="font-weight:600;font-size:13px;margin-bottom:2px">'+m.t+'</div><div style="color:#555">'+m.d+'</div>';const pos=tp.caretX;const area=ctx.chart.chartArea;tip.style.left=(pos>area.width/2?pos-230:pos+16)+'px';tip.style.top=(tp.caretY-20)+'px';tip.style.opacity='1'}}},scales:{x:{grid:{display:false},ticks:{color:'#aaa',font:{size:11},maxRotation:45}},y:{display:false,min:0,max:105}}}});
+</script>
+</body>
+</html>
